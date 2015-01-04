@@ -26,16 +26,16 @@ data Board = Board { width  :: Int
 
 -- | Generate a random minesweeper 'Board'.
 randomBoard :: Int -> (Int, Int) -> (Int, Int) -> Board
-randomBoard s d@(n, m) (cn, cm) = buildBoard d . Dl.nub . take numberOfMines $ positions
+randomBoard s d@(n, m) c@(cn, cm) = buildBoard d c . Dl.nub . take numberOfMines $ positions
   where
     positions     = [(n', m') | (n', m') <- zip (randoms s $ pred n) (randoms (succ s) $ pred m), (n', m') /= (cn, cm)]
     randoms s b   = Sr.randomRs (0, b) $ Sr.mkStdGen s
     numberOfMines = round $ fromIntegral (n * m) * density
     density       = 0.25
 
--- | Generate a minesweeper 'Board', from its dimensions and a list of positions for mines.
-buildBoard :: (Int, Int) -> [(Int, Int)] -> Board
-buildBoard (n, m) = buildBoard'
+-- | Generate a minesweeper 'Board', from its dimensions, a first click and a list of positions for mines.
+buildBoard :: (Int, Int) -> (Int, Int) -> [(Int, Int)] -> Board
+buildBoard (n, m) c = clickCell c . buildBoard'
   where
     buildBoard' (p : ps)                = adjustCell mine p . notifyNeighbours (neighbours p) $ buildBoard' ps
     buildBoard' _                       = emptyBoard
