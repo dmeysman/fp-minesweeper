@@ -53,7 +53,7 @@ buildBoard (n, m) c = clickCell c . buildBoard'
     notifyNeighbours (neighbour : ns) b = adjustCell (updateAdjacentMines succ) neighbour . notifyNeighbours ns $ b
     notifyNeighbours _                b = b
     mine                                = const minedCell
-    emptyBoard                          = Board n m . Ds.fromList . fmap Ds.fromList . replicate n $ replicate m emptyCell
+    emptyBoard                          = Board n m . Ds.fromList . fmap Ds.fromList . replicate m $ replicate n emptyCell
 
 -- | Try to read the 'Cell' at the given position on the 'Board'.
 readCell :: (Int, Int) -> Board -> Maybe Cell
