@@ -9,6 +9,7 @@ module Minesweeper.Board
   -- * Validation
   , lost
   , won
+  , cells
   ) where
 
 import qualified Data.Foldable    as Df
@@ -23,6 +24,17 @@ data Board = Board { width  :: Int
                    , height :: Int
                    , cells  :: Ds.Seq (Ds.Seq Cell)
                    }
+
+instance Show Board where
+
+  show b@(Board { width = n, cells = css })
+    | lost b || won b = showUnmasked css
+    | otherwise       = showMasked css
+    where
+      showUnmasked    = showMasked . fmap (fmap unmask)
+      showMasked css' = rowSeparator ++ (Dl.intercalate rowSeparator (Df.toList $ fmap showRow css')) ++ rowSeparator
+      showRow r       = '|' : (Dl.intercalate "|" . Df.toList . fmap show $ r) ++ "|\n"
+      rowSeparator    = (Dl.intersperse '-' . take (succ n) $ repeat '+') ++ "\n"
 
 -- | Generate a random minesweeper 'Board'.
 randomBoard :: Int -> (Int, Int) -> (Int, Int) -> Board
