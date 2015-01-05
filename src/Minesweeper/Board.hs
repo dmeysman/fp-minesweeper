@@ -9,7 +9,6 @@ module Minesweeper.Board
   -- * Validation
   , lost
   , won
-  , cells
   ) where
 
 import qualified Data.Foldable    as Df
